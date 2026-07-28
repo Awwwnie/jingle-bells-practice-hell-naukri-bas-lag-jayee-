@@ -1,1 +1,29 @@
 
+name: Daily Commit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 18 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Update log
+        run: |
+          echo "$(date)" >> daily-log.txt
+          git add daily-log.txt
+          git commit -m "Daily update" || true
+          git push
